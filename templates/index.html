@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Spell Checker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <!--  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+
+  <style>
+    ::-moz-selection { /* Code for Firefox */
+      color: red;
+      background: yellow;
+    }
+    
+    ::selection {
+      color: red;
+      background: yellow;
+    }
+    </style>
+
+<body>
+
+<h1>Assignment 3 - Spelling Checker Program</h1>
+
+<form role = "form" class="textarea-form">
+  
+  <div class="card">
+  <div class="card-header">
+    <h5>Input String</h5> 
+  </div>
+
+    <div class = "form-group card-body" >
+      
+      <textarea class = "form-control" rows = "3" id="textArea-input" placeholder = "Enter series of words here.."></textarea>
+      <br>
+      <button class="btn btn-primary" type="submit"  id="check-spelling">Check Spelling</button>
+    </div>
+  
+</form>
+
+<br>
+
+<div class="card">
+  <div class="card-header">
+    <h5>Corrections</h5>
+  </div>
+  <div class="card-body correction-frm" id="with-corrections">
+    <p class="card-text" ></p>
+  </div>
+</div>
+
+<br>
+
+<div class="card">
+  <div class="card-header">
+    <h5>LV Distances</h5>
+  </div>
+  <div class="card-body correction-frm" id="lv-distances">
+    
+  </div>
+</div>
+
+
+
+
+
+<script>
+
+    var textForm = get('.textarea-form');
+    var correctionForm = get('.correction-frm');
+
+    var newHTML = '';
+    var LVD_html = '';
+
+    textForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      var inputString = document.getElementById("textArea-input").value;
+      checkSpelling(inputString);  
+
+      console.log(newHTML);
+    });
+
+   correctionForm.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      var targetValue = e.target.value;
+      console.log("Orig word: "+targetValue);
+      clearcontent('lv-distances');
+
+      $.get("/getLVDistances", { reqData: targetValue }).done(function (data) {     
+        
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) {
+              value = data[key];
+            showLVDistances(key,value);
+          }
+          
+        } 
+        
+        console.log(LVD_html);
+        document.getElementById("lv-distances").innerHTML += LVD_html;
+      });
+      
+      //console.log(e.target.value);
+   });
+
+   function reloadLVDistances(){
+    $("#lv-distances").load(" #lv-distances > *");
+   }
+
+    function checkSpelling(inputString){
+          
+      $.get("/spellchecker", { reqData: inputString }).done(function (data) {     
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) {
+              var origWord = data[key]['origToken'];
+              var closest = data[key]['closest'];
+              var isInDictionary = data[key]['isInDictionary'];
+              var word = data[key]['word'];
+           
+              AppendCorrections(word,isInDictionary,origWord,closest);
+          }
+        } 
+        console.log(data); 
+        document.getElementById("with-corrections").innerHTML += newHTML;
+
+      });
+
+    }
+
+    function AppendCorrections(word,isInDictionary,origWord, closest){
+      console.log("Word: "+word);
+      
+      if(isInDictionary){
+        newHTML += `${origWord}` + ' ';
+      }
+      else{
+        newHTML += `<button id="correction-btn-${closest}" class="btn btn-outline-danger" value=${origWord}>${closest}</button>`+" " ;
+        //newHTML += `<a href="getLVDistances?word=${closest}"><button id="correction-button" class="btn btn-outline-danger" type="submit" value=${closest}>${closest}</button></a>`+" " ;
+      }
+     //console.log(newHTML);
+     
+    }
+
+    function showLVDistances(word,distance){
+      LVD_html += `${word} -> ${distance}` + `<br>`;
+    }
+  
+
+    function clearcontent(elementID) {
+            var div = document.getElementById(elementID);
+            
+            while(div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
+
+            var newHTML = '';
+            var LVD_html = '';
+
+            reloadLVDistances();
+          
+        }
+
+    function get(selector, root = document) {
+      return root.querySelector(selector);
+    }
+
+
+
+/*  var word = "";
+  var countCharInWord = 0;
+  var countAllChars = 0;
+  
+    document.getElementById("textArea").onkeyup = function(e) {
+    
+      var kcode = e.keyCode;
+
+      if(kcode == 32 || kcode == 13)
+      {
+        
+        if(!wordIsInDictionary())
+        {
+          //highLightText();
+          //$('#textArea').focus();
+          console.log("count all alpha: "+countAllChars);
+          console.log("count all char in word: "+countCharInWord);
+          SelectText('#textArea', countAllChars-countCharInWord, countAllChars-1);
+          
+
+        }        
+       
+        word = "";
+        countCharInWord = 0;
+        countAllChars++;
+      }
+
+      
+      if(kcode >= 65 && kcode <= 90){
+        word += e.key;
+        countCharInWord++;
+        countAllChars++;
+      }
+     
+      
+    }; */
+
+         
+</script>
+
+
+</body>
+</html>
+
