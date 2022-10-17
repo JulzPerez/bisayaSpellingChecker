@@ -26,7 +26,7 @@
 
 <body>
 
-<h3>Assignment 3 - Spelling Checker Program</h3>
+<h4>Assignment 3 - Spelling Checker Program</h4>
 
 <form role = "form" class="textarea-form">
   
@@ -48,7 +48,7 @@
 
 <div class="card">
   <div class="card-header">
-    <h5>Corrections</h5>
+    <h5>With Corrections</h5>
   </div>
   <div class="card-body correction-frm" id="with-corrections">
     <p class="card-text" ></p>
@@ -142,6 +142,7 @@
         newHTML += `${origWord}` + ' ';
       }
       else{
+        newHTML += `${origWord}`;
         newHTML += `<button id="correction-btn-${closest}" class="btn btn-outline-danger" value=${origWord}>${closest}</button>`+" " ;
         //newHTML += `<a href="getLVDistances?word=${closest}"><button id="correction-button" class="btn btn-outline-danger" type="submit" value=${closest}>${closest}</button></a>`+" " ;
       }
