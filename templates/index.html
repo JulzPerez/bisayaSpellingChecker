@@ -50,8 +50,8 @@
   <div class="card-header">
     <h5>With Corrections</h5>
   </div>
-  <div class="card-body correction-frm" id="with-corrections">
-    <p class="card-text" ></p>
+  <div class="card-body correction-frm" >
+    <p class="card-text" id="with-corrections"></p>
   </div>
 </div>
 
@@ -61,13 +61,10 @@
   <div class="card-header">
     <h5>LV Distances</h5>
   </div>
-  <div class="card-body correction-frm" id="lv-distances">
-    
+  <div class="card-body" id="lvD-div">
+    <p class="card-text" id="lv-distances"></p>
   </div>
 </div>
-
-
-
 
 
 <script>
@@ -90,9 +87,11 @@
    correctionForm.addEventListener('click', (e) => {
       e.preventDefault();
 
+      LVD_html = '';
+      document.getElementById('lv-distances').innerHTML = LVD_html;
+
       var targetValue = e.target.value;
       console.log("Orig word: "+targetValue);
-      clearcontent('lv-distances');
 
       $.get("/getLVDistances", { reqData: targetValue }).done(function (data) {     
         
@@ -103,17 +102,15 @@
           }
           
         } 
+
         
-        console.log(LVD_html);
-        document.getElementById("lv-distances").innerHTML += LVD_html;
+        //console.log(LVD_html);         
+        document.getElementById('lv-distances').innerHTML = LVD_html;
+       
       });
       
       //console.log(e.target.value);
    });
-
-   function reloadLVDistances(){
-    $("#lv-distances").load(" #lv-distances > *");
-   }
 
     function checkSpelling(inputString){
           
@@ -146,71 +143,18 @@
         newHTML += `<button id="correction-btn-${closest}" class="btn btn-outline-danger" value=${origWord}>${closest}</button>`+" " ;
         //newHTML += `<a href="getLVDistances?word=${closest}"><button id="correction-button" class="btn btn-outline-danger" type="submit" value=${closest}>${closest}</button></a>`+" " ;
       }
-     //console.log(newHTML);
-     
+     //console.log(newHTML);     
     }
 
     function showLVDistances(word,distance){
       LVD_html += `${word} -> ${distance}` + `<br>`;
     }
-  
-
-    function clearcontent(elementID) {
-            var div = document.getElementById(elementID);
-            
-            while(div.firstChild) {
-                div.removeChild(div.firstChild);
-            }
-
-            var newHTML = '';
-            var LVD_html = '';
-
-            reloadLVDistances();
-          
-        }
 
     function get(selector, root = document) {
       return root.querySelector(selector);
     }
 
 
-
-/*  var word = "";
-  var countCharInWord = 0;
-  var countAllChars = 0;
-  
-    document.getElementById("textArea").onkeyup = function(e) {
-    
-      var kcode = e.keyCode;
-
-      if(kcode == 32 || kcode == 13)
-      {
-        
-        if(!wordIsInDictionary())
-        {
-          //highLightText();
-          //$('#textArea').focus();
-          console.log("count all alpha: "+countAllChars);
-          console.log("count all char in word: "+countCharInWord);
-          SelectText('#textArea', countAllChars-countCharInWord, countAllChars-1);
-          
-
-        }        
-       
-        word = "";
-        countCharInWord = 0;
-        countAllChars++;
-      }
-
-      
-      if(kcode >= 65 && kcode <= 90){
-        word += e.key;
-        countCharInWord++;
-        countAllChars++;
-      }
-     
-      
-    }; */
 
          
 </script>
