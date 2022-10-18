@@ -37,7 +37,7 @@
 
     <div class = "form-group card-body" >
       
-      <textarea class = "form-control" rows = "3" id="textArea-input" placeholder = "Enter series of words here.."></textarea>
+      <textarea class = "form-control" rows = "2" id="textArea-input" placeholder = "Enter series of words here.."></textarea>
       <br>
       <button class="btn btn-primary btn-sm" type="submit"  id="check-spelling">Check Spelling</button>
     </div>
@@ -139,7 +139,7 @@
         newHTML += `${origWord}` + ' ';
       }
       else{
-        newHTML += `${origWord}`;
+        newHTML += `${origWord}->`;
         newHTML += `<button id="correction-btn-${closest}" class="btn btn-outline-danger" value=${origWord}>${closest}</button>`+" " ;
         //newHTML += `<a href="getLVDistances?word=${closest}"><button id="correction-button" class="btn btn-outline-danger" type="submit" value=${closest}>${closest}</button></a>`+" " ;
       }
